@@ -2,35 +2,10 @@ import 'package:flutter/foundation.dart' show kIsWeb;
 import 'package:sqflite_common_ffi_web/sqflite_ffi_web.dart';
 import 'package:sqflite/sqflite.dart';
 
+import '../constants/db_constants.dart';
 import '../models/comment_model.dart';
 import '../models/story_model.dart';
 import 'repository.dart' show Source, Cache;
-
-//------------TABLE STORIES------------
-const String _tableStories = 'stories';
-//------------------
-//---Story Schema---
-//------------------
-const String _columnId = '_id';
-const String _columnTitle = 'title';
-const String _columnBy = 'by';
-const String _columnScore = 'score';
-const String _columnDescendants = 'descendants';
-const String _columnKids = 'kids';
-const String _columnUrl = 'url';
-const String _columnCreated = 'created'; //time
-
-//------------TABLE COMMENTS------------
-const String _tableComments = 'comments';
-//--------------------
-//---Comment Schema---
-//--------------------
-// const String _columnId = '_id';
-const String _columnText = 'text';
-// const String _columnBy = 'by';
-const String _columnParent = 'parent';
-// const String _columnKids = 'kids';
-// const String _columnCreated = 'created'; //time
 
 class SqfliteDb implements Source, Cache {
   final DatabaseFactory? dbFactory;
@@ -59,28 +34,28 @@ class SqfliteDb implements Source, Cache {
         db.transaction((txn) async {
           // Create table for stories
           await txn.execute('''
-          CREATE TABLE $_tableStories 
+          CREATE TABLE $tableStories 
             (
-              $_columnId INTEGER PRIMARY KEY,
-              $_columnTitle TEXT NOT NULL,
-              $_columnBy TEXT NOT NULL,
-              $_columnScore INTEGER NOT NULL,
-              $_columnDescendants INTEGER NOT NULL,
-              $_columnKids BLOB NOT NULL,
-              $_columnUrl TEXT NOT NULL,
-              $_columnCreated INTEGER NOT NULL
+              $columnId INTEGER PRIMARY KEY,
+              $columnTitle TEXT NOT NULL,
+              $columnBy TEXT NOT NULL,
+              $columnScore INTEGER NOT NULL,
+              $columnDescendants INTEGER NOT NULL,
+              $columnKids BLOB NOT NULL,
+              $columnUrl TEXT NOT NULL,
+              $columnCreated INTEGER NOT NULL
             )
           ''');
           // Create table for comments
           await txn.execute('''
-          CREATE TABLE $_tableComments
+          CREATE TABLE $tableComments
             (
-              $_columnId INTEGER PRIMARY KEY,
-              $_columnText TEXT NOT NULL,
-              $_columnBy TEXT NOT NULL,
-              $_columnParent INTEGER NOT NULL,
-              $_columnKids BLOB NOT NULL,
-              $_columnCreated INTEGER NOT NULL
+              $columnId INTEGER PRIMARY KEY,
+              $columnText TEXT NOT NULL,
+              $columnBy TEXT NOT NULL,
+              $columnParent INTEGER NOT NULL,
+              $columnKids BLOB NOT NULL,
+              $columnCreated INTEGER NOT NULL
             )
           ''');
         });
@@ -102,18 +77,18 @@ class SqfliteDb implements Source, Cache {
   /// Throws an exception if the story is not found.
   @override
   Future<StoryModel> fetchStory(int id) async {
-    List<Map> maps = await _db.query(_tableStories,
+    List<Map> maps = await _db.query(tableStories,
         columns: [
-          _columnId,
-          _columnTitle,
-          _columnBy,
-          _columnScore,
-          _columnDescendants,
-          _columnKids,
-          _columnUrl,
-          _columnCreated,
+          columnId,
+          columnTitle,
+          columnBy,
+          columnScore,
+          columnDescendants,
+          columnKids,
+          columnUrl,
+          columnCreated,
         ],
-        where: '$_columnId = ?',
+        where: '$columnId = ?',
         whereArgs: [id]);
 
     if (maps.isNotEmpty) {
@@ -125,23 +100,23 @@ class SqfliteDb implements Source, Cache {
   /// Add a story to [SqfliteDb]'s Stories Table
   @override
   Future<void> addStory(StoryModel story) async {
-    await _db.insert(_tableStories, story.toMap());
+    await _db.insert(tableStories, story.toMap());
   }
 
   /// Fetch a comment from [SqfliteDb]'s Comments Table.
   /// Throws an exception if the comment is not found.
   @override
   Future<CommentModel> fetchComment(int id) async {
-    List<Map> maps = await _db.query(_tableComments,
+    List<Map> maps = await _db.query(tableComments,
         columns: [
-          _columnId,
-          _columnText,
-          _columnBy,
-          _columnParent,
-          _columnKids,
-          _columnCreated,
+          columnId,
+          columnText,
+          columnBy,
+          columnParent,
+          columnKids,
+          columnCreated,
         ],
-        where: '$_columnId = ?',
+        where: '$columnId = ?',
         whereArgs: [id]);
 
     if (maps.isNotEmpty) {
@@ -153,15 +128,15 @@ class SqfliteDb implements Source, Cache {
   /// Add a comment to [SqfliteDb]'s Comments Table.
   @override
   Future<void> addComment(CommentModel comment) async {
-    await _db.insert(_tableComments, comment.toMap());
+    await _db.insert(tableComments, comment.toMap());
   }
 
   /// Clear [SqfliteDb] by deleting all tables.
   @override
   Future<void> clear() async {
     await _db.transaction((txn) async {
-      await txn.delete(_tableStories);
-      await txn.delete(_tableComments);
+      await txn.delete(tableStories);
+      await txn.delete(tableComments);
     });
   }
 }

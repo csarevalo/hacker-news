@@ -1,6 +1,8 @@
 import 'dart:convert';
 import 'item_model.dart';
 
+import '../constants/db_constants.dart';
+
 class StoryModel {
   /// The story's unique id.
   final int id;
@@ -59,26 +61,30 @@ class StoryModel {
         kids = item.kids,
         url = item.url;
 
+  /// Get [StoryModel] from [Map] given by database.
   StoryModel.fromMap(Map<String, dynamic> map)
-      : id = map['_id'] as int,
-        title = map['title'] as String,
-        by = map['by'] as String,
-        created = DateTime.fromMillisecondsSinceEpoch((map['created'] as int)),
-        score = map['score'] as int,
-        descendants = map['descendants'] as int,
-        kids = List<int>.from(jsonDecode(map['kids'])),
-        url = map['url'] as String;
+      : id = map[columnId] as int,
+        title = map[columnTitle] as String,
+        by = map[columnBy] as String,
+        created = DateTime.fromMillisecondsSinceEpoch(
+          (map[columnCreated] as int),
+        ),
+        score = map[columnScore] as int,
+        descendants = map[columnDescendants] as int,
+        kids = List<int>.from(jsonDecode(map[columnKids])),
+        url = map[columnUrl] as String;
 
+  /// Transform [StoryModel] to [Map] for database.
   Map<String, dynamic> toMap() {
     return <String, dynamic>{
-      "_id": id,
-      "title": title,
-      "by": by,
-      "score": score,
-      "descendants": descendants,
-      "kids": jsonEncode(kids),
-      "url": url,
-      "created": created.millisecondsSinceEpoch,
+      columnId: id,
+      columnTitle: title,
+      columnBy: by,
+      columnScore: score,
+      columnDescendants: descendants,
+      columnKids: jsonEncode(kids),
+      columnUrl: url,
+      columnCreated: created.millisecondsSinceEpoch,
     };
   }
 }
