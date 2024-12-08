@@ -15,7 +15,7 @@ class NewsApi implements Source {
 
   NewsApi({Client? client}) : _client = client ?? Client();
 
-  /// Set [Source]/[Cache] id for comparisons.
+  /// Set [Source] id for comparisons.
   @override
   String id = 'hacker_news_api';
 

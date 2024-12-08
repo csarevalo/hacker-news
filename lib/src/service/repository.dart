@@ -1,6 +1,8 @@
-import 'dart:io';
+import 'dart:io' show Directory;
 
-import 'package:flutter/foundation.dart' show debugPrint, kIsWeb;
+import 'package:flutter/foundation.dart' show kIsWeb, debugPrint;
+import 'package:hacker_news/src/service/news_api.dart';
+import 'package:hacker_news/src/service/sqflite_db.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:path/path.dart' as p show join;
 
@@ -8,6 +10,8 @@ import '../models/comment_model.dart';
 import '../models/story_model.dart';
 
 class Repository implements Source, Cache {
+  final SqfliteDb _sqfliteDb = SqfliteDb();
+  final NewsApi _newsApi = NewsApi();
   final List<Source> sources = [];
   final List<Cache> caches = [];
 
@@ -16,14 +20,27 @@ class Repository implements Source, Cache {
 
   /// Initialize [Repository].
   Future<void> init() async {
-    String path;
-    if (kIsWeb) {
-      path = ''; // set internally by [Cache] when kIsWeb is true.
-    } else {
-      final Directory dir = await getApplicationDocumentsDirectory();
-      path = p.join(dir.path, 'Hacker News', 'demo.db');
+    _addSources();
+    _addCaches();
+    String path = '';
+    if (!kIsWeb) {
+      final Directory dir = await getApplicationCacheDirectory();
+      path = dir.path;
     }
+    path = p.join(path, 'Hacker News', 'demo.db');
+    debugPrint('[sqflite_db] path: $path');
     await open(path);
+  }
+
+  /// Add [Source]s to [Repository].
+  void _addSources() {
+    sources.add(_sqfliteDb);
+    sources.add(_newsApi);
+  }
+
+  /// Add [Cache]s to [Repository].
+  void _addCaches() {
+    caches.add(_sqfliteDb);
   }
 
   /// Fetch top story ids from the first available [Source].
@@ -38,18 +55,19 @@ class Repository implements Source, Cache {
 
   /// Fetch story from the first available [Cache].
   @override
-  Future<StoryModel> fetchStory(int id) async {
-    late final StoryModel story;
-    late String usedSourceId;
+  Future<StoryModel?> fetchStory(int id) async {
+    StoryModel? story;
+    String usedSourceId = '';
     for (var source in sources) {
-      try {
-        story = await source.fetchStory(id);
-        usedSourceId = source.id;
-        break;
-      } catch (e) {
-        debugPrint(e.toString());
-      }
+      story = await source.fetchStory(id);
+      usedSourceId = source.id;
+      if (story != null) break;
     }
+    if (story == null) return null;
+    if (usedSourceId.isEmpty) {
+      throw Exception('Failed to determine source of story.');
+    }
+
     for (var cache in caches) {
       if (cache.id != usedSourceId) {
         cache.addStory(story);
@@ -60,17 +78,17 @@ class Repository implements Source, Cache {
 
   /// Fetch comment from the first available [Cache].
   @override
-  Future<CommentModel> fetchComment(int id) async {
-    late final CommentModel comment;
-    late String usedSourceId;
+  Future<CommentModel?> fetchComment(int id) async {
+    CommentModel? comment;
+    String usedSourceId = '';
     for (var source in sources) {
-      try {
-        comment = await source.fetchComment(id);
-        usedSourceId = source.id;
-        break;
-      } catch (e) {
-        debugPrint(e.toString());
-      }
+      comment = await source.fetchComment(id);
+      usedSourceId = source.id;
+      if (comment != null) break;
+    }
+    if (comment == null) return null;
+    if (usedSourceId.isEmpty) {
+      throw Exception('Failed to determine source of comment.');
     }
     for (var cache in caches) {
       if (cache.id != usedSourceId) {
@@ -133,6 +151,6 @@ abstract class Cache {
 abstract class Source {
   late final String id;
   Future<List<int>> fetchTopStoryIds();
-  Future<StoryModel> fetchStory(int id);
-  Future<CommentModel> fetchComment(int id);
+  Future<StoryModel?> fetchStory(int id);
+  Future<CommentModel?> fetchComment(int id);
 }

@@ -51,20 +51,21 @@ void main() {
         );
         final sqlDb = SqfliteDb();
         await sqlDb.open(mockPath);
-        // await sqlDb.clear(); //DO NOT USE unless intended
+        await sqlDb.clear();
         await sqlDb.addComment(sampleComment);
         var comment = await sqlDb.fetchComment(sampleComment.id);
-        expect(comment.id, sampleComment.id);
-        expect(comment.text, sampleComment.text);
-        expect(comment.by, sampleComment.by);
+        expect(comment == null, false);
+        expect(comment?.id, sampleComment.id);
+        expect(comment?.text, sampleComment.text);
+        expect(comment?.by, sampleComment.by);
         expect(
-          comment.created,
+          comment?.created,
           DateTime.fromMillisecondsSinceEpoch(
             sampleComment.created.millisecondsSinceEpoch,
           ),
         );
-        expect(comment.parent, sampleComment.parent);
-        expect(comment.kids, sampleComment.kids);
+        expect(comment?.parent, sampleComment.parent);
+        expect(comment?.kids, sampleComment.kids);
         await sqlDb.close();
       },
     );
@@ -76,6 +77,7 @@ void main() {
         StoryModel sampleStory = StoryModel(
           id: 1,
           title: 'Fake Title',
+          text: 'Fake text.',
           by: 'Fake Author',
           created: DateTime.now(),
           score: 100,
@@ -85,22 +87,23 @@ void main() {
         );
         final sqlDb = SqfliteDb();
         await sqlDb.open(mockPath);
-        // await sqlDb.clear(); //DO NOT USE unless intended
+        await sqlDb.clear();
         await sqlDb.addStory(sampleStory);
         var story = await sqlDb.fetchStory(sampleStory.id);
-        expect(story.id, sampleStory.id);
-        expect(story.title, sampleStory.title);
-        expect(story.by, sampleStory.by);
-        expect(story.score, sampleStory.score);
+        expect(story == null, false);
+        expect(story?.id, sampleStory.id);
+        expect(story?.title, sampleStory.title);
+        expect(story?.by, sampleStory.by);
+        expect(story?.score, sampleStory.score);
         expect(
-          story.created,
+          story?.created,
           DateTime.fromMillisecondsSinceEpoch(
             sampleStory.created.millisecondsSinceEpoch,
           ),
         );
-        expect(story.descendants, sampleStory.descendants);
-        expect(story.kids, sampleStory.kids);
-        expect(story.url, sampleStory.url);
+        expect(story?.descendants, sampleStory.descendants);
+        expect(story?.kids, sampleStory.kids);
+        expect(story?.url, sampleStory.url);
         await sqlDb.close();
       },
     );
