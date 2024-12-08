@@ -1,7 +1,7 @@
 import 'dart:convert';
 
 import 'package:flutter_test/flutter_test.dart';
-import 'package:hacker_news/src/resources/news_api.dart';
+import 'package:hacker_news/src/service/news_api.dart';
 import 'package:http/http.dart';
 import 'package:http/testing.dart';
 

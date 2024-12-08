@@ -41,8 +41,8 @@ class StoryModel {
       : id = parsedJson['id'] as int,
         title = parsedJson['title'] as String,
         by = parsedJson['by'] as String,
-        created = DateTime.fromMicrosecondsSinceEpoch(
-          (parsedJson['time'] as int) * 1000,
+        created = DateTime.fromMillisecondsSinceEpoch(
+          (parsedJson['time'] as int),
         ),
         score = parsedJson['score'] as int,
         descendants = parsedJson['descendants'] as int,
@@ -60,27 +60,25 @@ class StoryModel {
         url = item.url;
 
   StoryModel.fromMap(Map<String, dynamic> map)
-      : id = map['id'] as int,
+      : id = map['_id'] as int,
         title = map['title'] as String,
         by = map['by'] as String,
-        created = DateTime.fromMicrosecondsSinceEpoch(
-          (map['created'] as int) * 1000,
-        ),
+        created = DateTime.fromMillisecondsSinceEpoch((map['created'] as int)),
         score = map['score'] as int,
         descendants = map['descendants'] as int,
-        kids = List<int>.from(map['kids']),
+        kids = List<int>.from(jsonDecode(map['kids'])),
         url = map['url'] as String;
 
   Map<String, dynamic> toMap() {
     return <String, dynamic>{
-      "id": id,
+      "_id": id,
       "title": title,
       "by": by,
       "score": score,
       "descendants": descendants,
       "kids": jsonEncode(kids),
       "url": url,
-      "created": created.microsecondsSinceEpoch ~/ 1000,
+      "created": created.millisecondsSinceEpoch,
     };
   }
 }

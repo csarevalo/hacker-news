@@ -33,8 +33,8 @@ class CommentModel {
       : id = parsedJson['id'] as int,
         text = parsedJson['text'] as String,
         by = parsedJson['by'] as String,
-        created = DateTime.fromMicrosecondsSinceEpoch(
-          (parsedJson['time'] as int) * 1000,
+        created = DateTime.fromMillisecondsSinceEpoch(
+          (parsedJson['time'] as int),
         ),
         parent = parsedJson['parent'] as int,
         kids = List<int>.from(parsedJson['kids']);
@@ -48,23 +48,21 @@ class CommentModel {
         kids = item.kids;
 
   CommentModel.fromMap(Map<String, dynamic> map)
-      : id = map['id'] as int,
+      : id = map['_id'] as int,
         text = map['text'] as String,
         by = map['by'] as String,
-        created = DateTime.fromMicrosecondsSinceEpoch(
-          (map['created'] as int) * 1000,
-        ),
+        created = DateTime.fromMillisecondsSinceEpoch((map['created'] as int)),
         parent = map['parent'] as int,
-        kids = List<int>.from(map['kids']);
+        kids = List<int>.from(jsonDecode((map['kids'])));
 
   Map<String, dynamic> toMap() {
     return <String, dynamic>{
-      "id": id,
+      "_id": id,
       "text": text,
       "by": by,
       "parent": parent,
       "kids": jsonEncode(kids),
-      "created": created,
+      "created": created.millisecondsSinceEpoch,
     };
   }
 }
