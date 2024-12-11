@@ -39,7 +39,7 @@ class CommentModel {
           (parsedJson['time'] as int),
         ),
         parent = parsedJson['parent'] as int,
-        kids = List<int>.from(parsedJson['kids']);
+        kids = List<int>.from(parsedJson['kids'] ?? []);
 
   CommentModel.fromItemModel(ItemModel item)
       : id = item.id,
@@ -47,7 +47,7 @@ class CommentModel {
         by = item.by,
         created = item.time,
         parent = item.parent!,
-        kids = item.kids;
+        kids = item.kids ?? [];
 
   /// Get [CommentModel] from [Map] given by database.
   CommentModel.fromMap(Map<String, dynamic> map)

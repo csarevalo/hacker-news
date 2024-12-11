@@ -91,7 +91,8 @@ main() {
       });
       final newsApi = NewsApi(client: mockClient);
       final storyModel = await newsApi.fetchStory(sampleStory['id'] as int);
-      expect(storyModel.id, sampleStory['id'] as int);
+      expect(storyModel == null, false);
+      expect(storyModel?.id, sampleStory['id'] as int);
     });
 
     test('.fetchComment gets CommentModel', () async {

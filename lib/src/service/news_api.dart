@@ -48,7 +48,7 @@ class NewsApi implements Source {
 
   /// Fetch a story from Hacker [NewsApi].
   @override
-  Future<StoryModel> fetchStory(int id) async {
+  Future<StoryModel?> fetchStory(int id) async {
     final response = await _client.get(Uri.parse('$_apiBaseUrl/item/$id.json'));
     if (response.statusCode != 200) {
       throw Exception(
@@ -56,7 +56,8 @@ class NewsApi implements Source {
       );
     }
     final parsedJson = json.decode(response.body);
-    return StoryModel.fromJson(parsedJson);
+    if (parsedJson['type']! == 'story') return StoryModel.fromJson(parsedJson);
+    return null;
   }
 
   /// Fetch a story from  Hacker [NewsApi].

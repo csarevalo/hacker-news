@@ -28,7 +28,7 @@ class ItemModel {
   // final int? poll;
 
   /// The ids of the item's comments, in ranked display order.
-  final List<int> kids;
+  final List<int>? kids;
 
   /// The URL of the story.
   final String url;

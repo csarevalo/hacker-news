@@ -8,6 +8,8 @@ import 'package:path/path.dart' as p show join;
 
 import '../models/comment_model.dart';
 import '../models/story_model.dart';
+export '../models/comment_model.dart';
+export '../models/story_model.dart';
 
 class Repository implements Source, Cache {
   final SqfliteDb _sqfliteDb = SqfliteDb();

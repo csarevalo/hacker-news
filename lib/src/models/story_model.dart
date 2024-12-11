@@ -52,8 +52,8 @@ class StoryModel {
           parsedJson['time'] as int,
         ),
         score = parsedJson['score'] as int,
-        descendants = parsedJson['descendants'] as int,
-        kids = List<int>.from(parsedJson['kids']),
+        descendants = parsedJson['descendants'] as int? ?? 0,
+        kids = List<int>.from(parsedJson['kids'] ?? []),
         url = parsedJson['url'] as String? ?? '' {
     assert(parsedJson['type'] == 'story');
   }
@@ -65,8 +65,8 @@ class StoryModel {
         by = item.by,
         created = item.time,
         score = item.score!,
-        descendants = item.descendants!,
-        kids = item.kids,
+        descendants = item.descendants ?? 0,
+        kids = item.kids ?? [],
         url = item.url;
 
   /// Get [StoryModel] from [Map] given by database.
