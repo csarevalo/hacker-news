@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+
 import '../service/repository.dart';
 
 class NewsProvider extends ChangeNotifier {

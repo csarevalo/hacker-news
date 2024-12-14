@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:hacker_news/src/service/repository.dart';
+
+import '../service/repository.dart';
 
 class TestRepoScreen extends StatelessWidget {
   const TestRepoScreen({

@@ -1,8 +1,7 @@
 import 'package:flutter/material.dart';
-// import 'package:hacker_news/src/screens/toBeReplaced/home_screen.dart';
-// import 'package:hacker_news/src/screens/test_repo_screen.dart';
 
 import 'screens/home_screen.dart';
+// import 'screens/test_repo_screen.dart';
 
 class HackerNewsApp extends StatelessWidget {
   const HackerNewsApp({super.key});
@@ -13,8 +12,8 @@ class HackerNewsApp extends StatelessWidget {
       debugShowCheckedModeBanner: false,
       title: 'Hacker News',
       theme: ThemeData.dark(),
-      // home: const TestRepoScreen(),
       home: const HomeScreen(),
+      // home: const TestRepoScreen(),
     );
   }
 }

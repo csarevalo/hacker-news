@@ -1,6 +1,6 @@
 import 'dart:convert';
-import 'item_model.dart';
 
+import 'item_model.dart';
 import '../constants/db_constants.dart';
 
 class StoryModel {

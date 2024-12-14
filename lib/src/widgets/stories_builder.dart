@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:hacker_news/src/widgets/story_tile.dart';
 import 'package:provider/provider.dart';
 
+import 'story_tile.dart';
 import '../provider/news_provider.dart';
 
 class StoriesBuilder extends StatelessWidget {

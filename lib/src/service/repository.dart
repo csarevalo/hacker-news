@@ -1,11 +1,11 @@
 import 'dart:io' show Directory;
 
 import 'package:flutter/foundation.dart' show kIsWeb, debugPrint;
-import 'package:hacker_news/src/service/news_api.dart';
-import 'package:hacker_news/src/service/sqflite_db.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:path/path.dart' as p show join;
 
+import 'news_api.dart';
+import 'sqflite_db.dart';
 import '../models/comment_model.dart';
 import '../models/story_model.dart';
 export '../models/comment_model.dart';
