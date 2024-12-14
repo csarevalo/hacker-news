@@ -114,7 +114,8 @@ main() {
       final newsApi = NewsApi(client: mockClient);
       final commentModel =
           await newsApi.fetchComment(sampleComment['id'] as int);
-      expect(commentModel.id, sampleComment['id'] as int);
+      expect(commentModel == null, false);
+      expect(commentModel?.id, sampleComment['id'] as int);
     });
   });
 }

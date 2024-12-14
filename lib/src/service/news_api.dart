@@ -56,13 +56,17 @@ class NewsApi implements Source {
       );
     }
     final parsedJson = json.decode(response.body);
-    if (parsedJson['type']! == 'story') return StoryModel.fromJson(parsedJson);
+    if (parsedJson['type']! == 'story') {
+      if (parsedJson['deleted'] as bool? ?? false == true) return null;
+      if (parsedJson['dead'] as bool? ?? false == true) return null;
+      return StoryModel.fromJson(parsedJson);
+    }
     return null;
   }
 
   /// Fetch a story from  Hacker [NewsApi].
   @override
-  Future<CommentModel> fetchComment(int id) async {
+  Future<CommentModel?> fetchComment(int id) async {
     final response = await _client.get(Uri.parse('$_apiBaseUrl/item/$id.json'));
     if (response.statusCode != 200) {
       throw Exception(
@@ -70,6 +74,11 @@ class NewsApi implements Source {
       );
     }
     final parsedJson = json.decode(response.body);
-    return CommentModel.fromJson(parsedJson);
+    if (parsedJson['type']! == 'comment') {
+      if (parsedJson['deleted'] as bool? ?? false == true) return null;
+      if (parsedJson['dead'] as bool? ?? false == true) return null;
+      return CommentModel.fromJson(parsedJson);
+    }
+    return null;
   }
 }

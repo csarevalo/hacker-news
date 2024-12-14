@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:hacker_news/src/screens/comment_screen.dart';
+import 'package:hacker_news/src/widgets/story_tile.dart';
 import 'package:provider/provider.dart';
 
 import '../provider/news_provider.dart';
@@ -7,19 +7,19 @@ import '../provider/news_provider.dart';
 class StoriesBuilder extends StatelessWidget {
   const StoriesBuilder({
     super.key,
-    required this.storiesIds,
+    required this.ids,
   });
 
-  final List<int> storiesIds;
+  final List<int> ids;
 
   @override
   Widget build(BuildContext context) {
     final newsProvider = context.read<NewsProvider>();
     return ListView.builder(
-      itemCount: storiesIds.length,
+      itemCount: ids.length,
       itemBuilder: (BuildContext context, int index) {
         return FutureBuilder(
-          future: newsProvider.getStory(storiesIds[index]),
+          future: newsProvider.getStory(ids[index]),
           builder: (context, snapshot2) {
             // debugPrint(snapshot2.connectionState.name);
             if (snapshot2.hasError) {
@@ -27,33 +27,15 @@ class StoriesBuilder extends StatelessWidget {
             }
             if (snapshot2.hasData) {
               var story = snapshot2.data!;
-              return Card(
-                child: ListTile(
-                  shape: const RoundedRectangleBorder(
-                    borderRadius: BorderRadius.all(Radius.circular(12.0)),
-                  ),
-                  onTap: () {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) => CommentScreen(story: story),
-                      ),
-                    );
-                  },
-                  title: Text(story.title),
-                  subtitle: Text(
-                    '${snapshot2.data!.score} Points by ${story.by} | ${story.descendants} Comments',
-                  ),
-                ),
-              );
+              return StoryTile(story: story);
             }
             if (snapshot2.connectionState.name == 'done') {
-              //don't show empty/null "stories," bc they aren't stories.
+              //don't show empty or null stories.
               return const SizedBox.shrink();
             }
             return Card(
               child: ListTile(
-                title: Text('Loading... ${storiesIds[index]}'),
+                title: Text('Loading... ${ids[index]}'),
                 subtitle: const LinearProgressIndicator(),
               ),
             );

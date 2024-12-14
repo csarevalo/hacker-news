@@ -53,7 +53,7 @@ class CommentModel {
   CommentModel.fromMap(Map<String, dynamic> map)
       : id = map[columnId] as int,
         text = map[columnText] as String,
-        by = map[columnBy] as String,
+        by = map[columnBy]! as String,
         created = DateTime.fromMillisecondsSinceEpoch(
           (map[columnCreated] as int),
         ),
